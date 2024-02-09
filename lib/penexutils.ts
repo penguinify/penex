@@ -16,8 +16,19 @@ class Components {
 
     constructor() {}
 
-    addComponent(component: Component) {
+    addComponents(component: Component[]): void {
+        for (let i = 0; i < component.length; i++) {
+            this.addComponent(component[i])
+        }
+    }
+
+    addScript(script: () => void): void {
+        this.scripts.push(script)
+    }
+
+    addComponent(component: Component): void {
         let pen: Pen<Elements>[] = []
+
         if (component.stringIt) {
             pen = Pen.fromHTML(component.stringIt())
         } else if (component.penIt) {
@@ -29,10 +40,6 @@ class Components {
         } else {
             this.pens.push(pen)
         }
-    }
-
-    addScript(script: () => void): void {
-        this.scripts.push(script)
     }
 }
 
