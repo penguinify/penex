@@ -80,24 +80,22 @@ class Pen<T extends Elements> {
     }
 
     static fromHTML(html: HTMLMarkup): Pen<HTMLElement>[] {
-        let element = document.createElement('div')
-        element.innerHTML = html
+        const element = document.createElement('div');
+        element.innerHTML = html;
 
-        let baseChildren = element.children
-        let allChildren = element.querySelectorAll('*')
-        let pens: Pen<HTMLElement>[] = []
+        const pens: Pen<HTMLElement>[] = [];
 
-        for (let i = 0; i < baseChildren.length; i++) {
-            let pen = Pen.fromElement(baseChildren[i] as HTMLElement, elementGlobals.mainApp)
-            pens.push(pen)
-        }
+        Array.from(element.children).forEach(child => {
+            const pen = Pen.fromElement(child as HTMLElement, elementGlobals.mainApp);
+            pens.push(pen);
+        });
 
-        for (let i = 0; i < allChildren.length; i++) {
-            let pen = Pen.fromElement(allChildren[i] as HTMLElement)
-            pens.push(pen)
-        }
+        element.querySelectorAll('*').forEach(child => {
+            const pen = Pen.fromElement(child as HTMLElement);
+            pens.push(pen);
+        });
 
-        return pens
+        return pens;
     }
 }
 
