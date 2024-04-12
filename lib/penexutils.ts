@@ -1,13 +1,10 @@
 type HTMLMarkup = string
 
 interface Component {
+    pens?: Pen<Elements>[]
     // tf are these names ;-;
     penIt?(): Pen<Elements>[]
     stringIt?(): string
-}
-
-abstract class Component {
-    pens: Pen<Elements>[] = []
 }
 
 class Components {
@@ -50,11 +47,11 @@ enum elementGlobals {
 type Elements = HTMLElement | HTMLInputElement | HTMLTextAreaElement | HTMLIFrameElement
 
 class Pen<T extends Elements> {
-    element: HTMLElement | HTMLInputElement
+    element: T
     parent?: HTMLElement | elementGlobals
 
     constructor(tag: string, parent?: T | elementGlobals) {
-        this.element = document.createElement(tag)
+        this.element = document.createElement(tag) as T
 
         if (parent) this.setParent(parent)
     }
@@ -66,12 +63,8 @@ class Pen<T extends Elements> {
         } else if (parent === elementGlobals.mainApp) this.parent = elementGlobals.mainApp
     }
 
-    setType<E extends Elements>() {
-        this.element = this.element as E
-    }
-
-    static fromElement<E extends Elements>(element: HTMLElement, parent?: E | elementGlobals): Pen<E> {
-        let pen = new Pen(element.tagName)
+    static fromElement<E extends Elements>(element: E, parent?: E | elementGlobals): Pen<E> {
+        let pen: Pen<E> = new Pen(element.tagName)
         pen.element = element
         if (parent) pen.setParent(parent)
         else if (element.parentElement) pen.setParent(element.parentElement!)
@@ -79,23 +72,23 @@ class Pen<T extends Elements> {
         return pen
     }
 
-    static fromHTML(html: HTMLMarkup): Pen<HTMLElement>[] {
-        const element = document.createElement('div');
-        element.innerHTML = html;
+    static fromHTML(html: HTMLMarkup): Pen<Elements>[] {
+        const element = document.createElement('div')
+        element.innerHTML = html
 
-        const pens: Pen<HTMLElement>[] = [];
+        const pens: Pen<HTMLElement>[] = []
 
-        Array.from(element.children).forEach(child => {
-            const pen = Pen.fromElement(child as HTMLElement, elementGlobals.mainApp);
-            pens.push(pen);
-        });
+        Array.from(element.children).forEach((child) => {
+            const pen = Pen.fromElement(child as HTMLElement, elementGlobals.mainApp)
+            pens.push(pen)
+        })
 
-        element.querySelectorAll('*').forEach(child => {
-            const pen = Pen.fromElement(child as HTMLElement);
-            pens.push(pen);
-        });
+        element.querySelectorAll('*').forEach((child) => {
+            const pen = Pen.fromElement(child as HTMLElement)
+            pens.push(pen)
+        })
 
-        return pens;
+        return pens
     }
 }
 
@@ -105,4 +98,4 @@ function getPenFromElementId(id: string, pens: Pen<Elements>[]): Pen<Elements> {
     else throw new Error(`No pen with id ${id} found.`)
 }
 
-export { getPenFromElementId, Component, Components, Pen, elementGlobals }
+export { getPenFromElementId, Component, Components, Pen, elementGlobals, Elements }

@@ -22,27 +22,31 @@ function setup(app: string, layout: string = defaultLayout, components?: Compone
     document.addEventListener('keydown', (e) => {
         switch (e.key) {
             case '\\':
-                document.getElementById(app)?.style.display === 'none' ? 'flex' : 'none'
+                if (mainApp === null) return
+                mainApp.style.display = mainApp.style.display === 'none' ? 'flex' : 'none'
                 break
             case 'F2':
                 alert('penex ui framework is loaded')
                 break
         }
     })
-    
+
     if (components === undefined) return
     for (let i = 0; i < components.pens.length; i++) {
         try {
             if (components.pens[i].parent === elementGlobals.mainApp) mainApp.appendChild(components.pens[i].element)
         } catch (e) {
-            throw "Error: " + e + " at component " + components.pens[i];
+            throw 'Error: ' + e + ' at component ' + components.pens[i]
         }
     }
 
     components.scripts.forEach((script) => {
-        script()
+        try {
+            script()
+        } catch (e) {
+            throw 'Error: ' + e + ' at script ' + script
+        }
     })
-
 }
 
 export { setup }
