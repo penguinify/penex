@@ -1,8 +1,9 @@
 import { Components, elementGlobals } from './penexutils'
+import { Router } from './penexutils'
 
 // Default layout
 const defaultLayout = `
-        <div id="main-app" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw;">
+        <div id="app" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw;">
             <h1>Welcome to penex ui framework</h1>
             <h2>@penguinify</h2>
         </div>
@@ -11,6 +12,7 @@ const defaultLayout = `
 function setup(app: string, layout: string = defaultLayout, components?: Components) {
     // stfu idc
     document.body.innerHTML = layout + document.body.innerHTML
+    console.log(components)
 
     let mainApp = document.getElementById(app)
 
@@ -40,13 +42,8 @@ function setup(app: string, layout: string = defaultLayout, components?: Compone
         }
     }
 
-    components.scripts.forEach((script) => {
-        try {
-            script()
-        } catch (e) {
-            throw 'Error: ' + e + ' at script ' + script
-        }
-    })
+
+    return
 }
 
 export { setup }
